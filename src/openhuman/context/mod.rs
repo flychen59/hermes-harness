@@ -31,6 +31,7 @@
 pub mod channels_prompt;
 pub mod guard;
 pub mod manager;
+pub mod mem0_recall;
 pub mod microcompact;
 pub mod pipeline;
 pub mod prompt;

@@ -33,6 +33,7 @@ pub mod guard;
 pub mod manager;
 pub mod mem0_recall;
 pub mod microcompact;
+pub mod task_queue;
 pub mod pipeline;
 pub mod prompt;
 pub mod segment_recap_summarizer;

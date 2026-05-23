@@ -137,7 +137,10 @@ impl Mem0Client {
 
         let response = self
             .http
-            .post(format!("{}/v1/memories/search/", self.config.endpoint.trim_end_matches('/')))
+            .post(format!(
+                "{}/v1/memories/search/",
+                self.config.endpoint.trim_end_matches('/')
+            ))
             .header("Content-Type", "application/json")
             .bearer_auth(&self.config.api_key)
             .json(&serde_json::json!({
@@ -181,7 +184,11 @@ impl Mem0Client {
         let truncated = total_chars > self.config.max_injection_chars;
         // Truncate if over budget — keep highest-scoring memories first
         if truncated {
-            memories.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+            memories.sort_by(|a, b| {
+                b.score
+                    .partial_cmp(&a.score)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            });
             let mut chars = 0;
             memories.retain(|m| {
                 chars += m.memory.len();
@@ -219,7 +226,10 @@ impl Mem0Client {
 
         let response = self
             .http
-            .post(format!("{}/v1/memories/", self.config.endpoint.trim_end_matches('/')))
+            .post(format!(
+                "{}/v1/memories/",
+                self.config.endpoint.trim_end_matches('/')
+            ))
             .header("Content-Type", "application/json")
             .bearer_auth(&self.config.api_key)
             .json(&serde_json::json!({
@@ -246,10 +256,7 @@ impl Mem0Client {
             })
             .unwrap_or_default();
 
-        tracing::info!(
-            facts_stored = memory_ids.len(),
-            "[mem0_store] stored facts"
-        );
+        tracing::info!(facts_stored = memory_ids.len(), "[mem0_store] stored facts");
 
         Ok(StoreResult {
             facts_stored: memory_ids.len(),
@@ -273,7 +280,8 @@ pub fn format_recall_for_prompt(recall: &RecallResult) -> String {
     parts.push(String::new());
 
     for (i, mem) in recall.memories.iter().enumerate() {
-        let timestamp = mem.created_at
+        let timestamp = mem
+            .created_at
             .as_ref()
             .map(|t| format!(" [{}]", t))
             .unwrap_or_default();
@@ -282,7 +290,10 @@ pub fn format_recall_for_prompt(recall: &RecallResult) -> String {
 
     if recall.truncated {
         parts.push(String::new());
-        parts.push("_(Some lower-relevance memories were truncated to fit the context budget)_".to_string());
+        parts.push(
+            "_(Some lower-relevance memories were truncated to fit the context budget)_"
+                .to_string(),
+        );
     }
 
     parts.join("\n")
